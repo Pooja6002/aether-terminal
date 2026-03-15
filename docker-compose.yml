@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: intelligence_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: geopolitical_intelligence
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7
+    container_name: intelligence_redis
+    ports:
+      - "6379:6379"
+
+  ml-service:
+    build:
+      context: ./ml-service
+    container_name: intelligence_ml
+    ports:
+      - "8000:8000"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: intelligence_backend
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: geopolitical_intelligence
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ML_SERVICE_URL: http://ml-service:8000
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - redis
+      - ml-service
+
+  ingestion-worker:
+    build:
+      context: ./backend
+    container_name: intelligence_ingestion
+    command: ["npm", "run", "ingest"]
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: geopolitical_intelligence
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ML_SERVICE_URL: http://ml-service:8000
+    depends_on:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: intelligence_frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
