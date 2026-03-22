@@ -47,6 +47,7 @@ export default function NewsFeed({ events }: { events: any[] }) {
                                     <span className="text-[#f59e0b] px-1 py-0.5 bg-[#f59e0b]/10 rounded border border-[#f59e0b]/20">
                                         EVENT: {ev.severity > 0.7 ? 'SEVERE' : 'MONITOR'}
                                     </span>
+                                    <span className="text-[#64748b]">LOC: {ev.location || 'GLOBAL'}</span>
                                     <span className="text-[#64748b]">IMP: {(ev.impact_score * 100).toFixed(0)}</span>
                                     <span className="text-[#64748b]">SRC: {ev.source || 'Intel'}</span>
                                 </div>

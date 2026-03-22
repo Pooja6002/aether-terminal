@@ -62,8 +62,8 @@ export default function GlobeViz({ activeEvents }: { activeEvents: any[] }) {
         const countryName = feature.properties.ADMIN;
 
         // Check if any active event maps to this country (mock matching)
-        // In a real app we'd map via ISO A3 code. For the mockup we randomly match or use dummy string includes.
-        const mappedEvent = activeEvents.find(ev => ev.location === countryName || ['United States', 'China', 'Switzerland'].includes(countryName));
+        // In a real app we'd map via ISO A3 code. For the mockup we match by ADMIN name.
+        const mappedEvent = activeEvents.find(ev => ev.location === countryName);
 
         if (mappedEvent) {
             // Using the reference colors: Red=Severe, Yellow=Mod, LightBlue=Low
@@ -77,10 +77,9 @@ export default function GlobeViz({ activeEvents }: { activeEvents: any[] }) {
     };
 
     const getPolygonAltitude = (feature: any) => {
-        // Slightly elevate highlighted countries
-        const countryName = feature.properties.ADMIN;
-        const mappedEvent = activeEvents.find(ev => ev.location === countryName || ['United States', 'China', 'Switzerland'].includes(countryName));
-        return mappedEvent ? 0.04 : 0.01;
+        const isoCode = feature.properties.ISO_A3 || feature.properties.ADM0_A3;
+        const mappedEvent = activeEvents.find(ev => ev.countryCode === isoCode);
+        return mappedEvent ? 0.05 : 0.01;
     };
 
     const handlePolygonClick = (polygon: any) => {
@@ -89,7 +88,7 @@ export default function GlobeViz({ activeEvents }: { activeEvents: any[] }) {
 
             // Find if this polygon has an event
             const countryName = polygon.properties.ADMIN;
-            const mappedEvent = activeEvents.find(ev => ev.location === countryName || ['United States', 'China', 'Switzerland'].includes(countryName));
+            const mappedEvent = activeEvents.find(ev => ev.location === countryName);
 
             if (mappedEvent) {
                 setSelectedEvent({ ...mappedEvent, location: countryName });
@@ -115,8 +114,21 @@ export default function GlobeViz({ activeEvents }: { activeEvents: any[] }) {
                 polygonAltitude={getPolygonAltitude}
                 polygonCapColor={getPolygonColor}
                 polygonSideColor={() => 'rgba(0, 0, 0, 0.4)'}
-                polygonStrokeColor={() => '#111827'}
+                polygonStrokeColor={() => '#0f172a'}
                 onPolygonClick={handlePolygonClick}
+                polygonLabel={({ properties }: any) => {
+                    const mappedEvent = activeEvents.find(ev => ev.countryCode === properties.ISO_A3 || ev.location === properties.ADMIN);
+                    const signal = mappedEvent ? (mappedEvent.signal || 'NEUTRAL') : 'NEUTRAL';
+                    return `
+                        <div class="bg-[#0a1120] border border-[#1e293b] p-3 rounded shadow-2xl font-sans text-white">
+                            <b class="text-xs uppercase tracking-widest text-[#94a3b8]">${properties.ADMIN}</b>
+                            <div class="mt-1 flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full ${signal === 'BUY' ? 'bg-[#3b82f6]' : signal === 'SELL' ? 'bg-[#ef4444]' : 'bg-[#105a40]'}"></span>
+                                <span class="text-[10px] uppercase font-bold tracking-tighter">${signal} SIGNAL</span>
+                            </div>
+                        </div>
+                    `;
+                }}
 
                 // Remove textures to use raw geometry base
                 globeImageUrl={null}

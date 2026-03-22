@@ -19,9 +19,16 @@ export default function Dashboard() {
   useEffect(() => {
     // Initial Mock State 
     const mockEvents = [
-      { id: '1', title: 'Global Energy Summit Concludes', source: 'Reuters', severity: 0.4, impact_score: 0.2, timestamp: Date.now(), location: 'Switzerland' },
-      { id: '2', title: 'New Trade Tariffs Announced in Tech Sectors', source: 'Bloomberg', severity: 0.8, impact_score: 0.7, timestamp: Date.now() - 50000, location: 'United States' },
-      { id: '3', title: 'Semiconductor Export Restrictions', source: 'IntelReport', severity: 0.9, impact_score: 0.95, timestamp: Date.now() - 150000, location: 'China' },
+      { id: '1', title: 'Critical Infrastructure Warning', source: 'IntelReport', severity: 0.95, impact_score: 0.85, timestamp: Date.now(), location: 'Iran', countryCode: 'IRN', signal: 'SELL' },
+      { id: '2', title: 'Defense Procurement Peak', source: 'Reuters', severity: 0.9, impact_score: 0.8, timestamp: Date.now() - 3600000, location: 'Ukraine', countryCode: 'UKR', signal: 'BUY' },
+      { id: '3', title: 'Energy Export Surge', source: 'Al Jazeera', severity: 0.85, impact_score: 0.75, timestamp: Date.now() - 7200000, location: 'United Arab Emirates', countryCode: 'ARE', signal: 'BUY' },
+      { id: '4', title: 'Tech Export Restrictions', source: 'Bloomberg', severity: 0.7, impact_score: 0.9, timestamp: Date.now() - 10800000, location: 'Taiwan', countryCode: 'TWN', signal: 'SELL' },
+      { id: '5', title: 'Agricultural Growth Forecast', source: 'AFP', severity: 0.3, impact_score: 0.4, timestamp: Date.now() - 14400000, location: 'Brazil', countryCode: 'BRA', signal: 'NEUTRAL' },
+      { id: '6', title: 'Interest Rate Stability', source: 'Handelsblatt', severity: 0.2, impact_score: 0.3, timestamp: Date.now() - 25200000, location: 'Germany', countryCode: 'DEU', signal: 'NEUTRAL' },
+      { id: '7', title: 'Naval Drill Alert', source: 'GlobalTimes', severity: 0.75, impact_score: 0.65, timestamp: Date.now() - 21600000, location: 'China', countryCode: 'CHN', signal: 'SELL' },
+      { id: '8', title: 'Supply Chain Reshoring', source: 'WSJ', severity: 0.6, impact_score: 0.7, timestamp: Date.now() - 30000000, location: 'United States', countryCode: 'USA', signal: 'BUY' },
+      { id: '9', title: 'Mining Sector Expansion', source: 'DailyIntel', severity: 0.4, impact_score: 0.5, timestamp: Date.now() - 40000000, location: 'Australia', countryCode: 'AUS', signal: 'BUY' },
+      { id: '10', title: 'Election Volatility Warning', source: 'ParisPulse', severity: 0.5, impact_score: 0.4, timestamp: Date.now() - 50000000, location: 'France', countryCode: 'FRA', signal: 'SELL' },
     ];
     setEvents(mockEvents);
 
