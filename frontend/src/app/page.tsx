@@ -29,6 +29,7 @@ export default function Dashboard() {
       { id: '8', title: 'Supply Chain Reshoring', source: 'WSJ', severity: 0.6, impact_score: 0.7, timestamp: Date.now() - 30000000, location: 'United States', countryCode: 'USA', signal: 'BUY' },
       { id: '9', title: 'Mining Sector Expansion', source: 'DailyIntel', severity: 0.4, impact_score: 0.5, timestamp: Date.now() - 40000000, location: 'Australia', countryCode: 'AUS', signal: 'BUY' },
       { id: '10', title: 'Election Volatility Warning', source: 'ParisPulse', severity: 0.5, impact_score: 0.4, timestamp: Date.now() - 50000000, location: 'France', countryCode: 'FRA', signal: 'SELL' },
+      { id: '11', title: 'Strategic Infrastructure Expansion', source: 'AsiaInvest', severity: 0.8, impact_score: 0.9, timestamp: Date.now() - 60000000, location: 'India', countryCode: 'IND', signal: 'BUY' },
     ];
     setEvents(mockEvents);
 
