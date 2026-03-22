@@ -51,7 +51,26 @@ export default function Dashboard() {
       }
     });
 
-    return () => { socket.disconnect(); };
+    // Presentation Simulation: Inject a LIVE Alert after 5 seconds
+    const timer = setTimeout(() => {
+        const liveAlert = { 
+            id: 'live-1', 
+            title: 'ALERT: Urgent Escalation Reported in Gulf Region', 
+            source: 'FlashIntel', 
+            severity: 0.98, 
+            impact_score: 0.95, 
+            timestamp: Date.now(), 
+            location: 'Iran', 
+            countryCode: 'IRN', 
+            signal: 'SELL' 
+        };
+        setEvents((prev) => [liveAlert, ...prev]);
+    }, 5000);
+
+    return () => { 
+        socket.disconnect(); 
+        clearTimeout(timer);
+    };
   }, []);
 
   return (

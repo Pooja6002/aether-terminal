@@ -25,6 +25,47 @@ export default function GlobeViz({ activeEvents }: { activeEvents: any[] }) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    // Auto-Focus Logic for new high-severity events
+    useEffect(() => {
+        if (activeEvents.length > 0 && globeRef.current && countries.features.length > 0) {
+            const latestEvent = activeEvents[0];
+            
+            // Only auto-focus on SEVERE events (severity > 0.8)
+            if (latestEvent.severity > 0.8) {
+                const targetCountry = countries.features.find((f: any) => 
+                    f.properties.ISO_A3 === latestEvent.countryCode || 
+                    f.properties.ADMIN === latestEvent.location
+                );
+
+                if (targetCountry) {
+                    // Get coordinates from geometry
+                    let lng = 0, lat = 0;
+                    try {
+                        const coords = targetCountry.geometry.type === 'Polygon' 
+                            ? targetCountry.geometry.coordinates[0][0]
+                            : targetCountry.geometry.coordinates[0][0][0];
+                        lng = coords[0];
+                        lat = coords[1];
+                    } catch (e) {
+                         // Fallback to center if geometry is complex
+                         lng = 0; lat = 20; 
+                    }
+
+                    // Transition the globe viewpoint
+                    globeRef.current.pointOfView({ lat, lng, altitude: 1.8 }, 2000);
+                    
+                    // Automatically open the popup
+                    setSelectedEvent(latestEvent);
+                    
+                    // Resume auto-rotate after a delay
+                    setTimeout(() => {
+                        if (globeRef.current) globeRef.current.controls().autoRotate = true;
+                    }, 8000);
+                }
+            }
+        }
+    }, [activeEvents, countries]);
+
     // Fetch GeoJSON map data
     useEffect(() => {
         fetch('https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
