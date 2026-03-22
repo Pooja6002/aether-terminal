@@ -59,21 +59,15 @@ export default function GlobeViz({ activeEvents }: { activeEvents: any[] }) {
 
     // Map polygon colors based on active events mapping to countries
     const getPolygonColor = (feature: any) => {
-        const countryName = feature.properties.ADMIN;
-
-        // Check if any active event maps to this country (mock matching)
-        // In a real app we'd map via ISO A3 code. For the mockup we match by ADMIN name.
-        const mappedEvent = activeEvents.find(ev => ev.location === countryName);
+        const isoCode = feature.properties.ISO_A3 || feature.properties.ADM0_A3;
+        const mappedEvent = activeEvents.find(ev => ev.countryCode === isoCode || ev.location === feature.properties.ADMIN);
 
         if (mappedEvent) {
-            // Using the reference colors: Red=Severe, Yellow=Mod, LightBlue=Low
-            if (mappedEvent.severity > 0.7) return '#ef4444'; // Red
-            if (mappedEvent.severity > 0.4) return '#f59e0b'; // Yellow
-            return '#3b82f6'; // Light Blue highlight
+            const signal = mappedEvent.signal || 'NEUTRAL';
+            if (signal === 'BUY') return '#3b82f6'; // Blue
+            if (signal === 'SELL') return '#ef4444'; // Red
         }
-
-        // Base Green color from reference image for untouched countries
-        return '#105a40';
+        return '#105a40'; 
     };
 
     const getPolygonAltitude = (feature: any) => {
